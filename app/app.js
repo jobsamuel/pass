@@ -1,25 +1,24 @@
 var express = require('express')
 ,	session	= require('express-session')
 ,	bodyParser = require('body-parser')
+,	mongoose = require('mongoose')
 ,	passport = require('passport')
 ,	pass = require('./passport')
+,	swig = require('swig')
 ,	app = express();
 
-// Passport session setup.
-//   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
-//   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.  However, since this example does not
-//   have a database of user records, the complete Twitter profile is serialized
-//   and deserialized.
+// Connect to MongoDB.
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
+mongoose.connect('mongodb://localhost/passport-demo-app', function (err, db) {
+	if (err) throw err;
+	console.log("Connected to database...");
 });
 
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
-});
+// Swig configuration.
+
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
 
 // Call passport configuration.
 
@@ -36,8 +35,15 @@ app.use(session({ secret: 'pass', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Routes.
+
 app.get('/', function (req, res) {
-	res.send({message: "Hello, I'm pass!"});
+	var user = req.session.passport.user;
+	if (user == null) {
+		res.render('index', { name: "Stranger" });	
+	} else {
+		res.render('index', { name: user.name });
+	}
 });
 
 app.get('/login', function (req, res) {
@@ -46,8 +52,7 @@ app.get('/login', function (req, res) {
 
 
 // Redirect the user to Twitter for authentication.  When complete, Twitter
-// will redirect the user back to the application at
-//   /auth/twitter/callback
+// will redirect the user back to the application at: /auth/twitter/callback
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
 
@@ -56,12 +61,8 @@ app.get('/auth/twitter', passport.authenticate('twitter'));
 // access was granted, the user will be logged in.  Otherwise,
 // authentication has failed.
 
-app.get('/auth/twitter/callback', 
-	passport.authenticate('twitter', { failureRedirect: '/login' }),
-  	function(req, res) {
-	    // Successful authentication, redirect to home.
-	    res.redirect('/');
-  	});
+app.get('/auth/twitter/callback', passport.authenticate('twitter',
+  { successRedirect: '/', failureRedirect: '/login' }));
 
 app.listen(3000);
 console.log("App listening on port 3000");
