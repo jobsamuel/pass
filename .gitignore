@@ -28,4 +28,4 @@ node_modules
 .lock-wscript
 
 # Twitter tokens
-app/config.js
+app/tokens.js
