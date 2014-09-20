@@ -1,0 +1,30 @@
+{
+  "name": "pass",
+  "version": "0.0.0",
+  "description": "A demo app that uses Passport.",
+  "main": "app/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jobsamuel/pass.git"
+  },
+  "keywords": [
+    "Passport",
+    "Demo"
+  ],
+  "author": "Jobsamuel Núñez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jobsamuel/pass/issues"
+  },
+  "homepage": "https://github.com/jobsamuel/pass",
+  "dependencies": {
+    "express": "^4.9.3",
+    "body-parser": "^1.8.2",
+    "passport": "^0.2.1",
+    "passport-twitter": "^1.0.2",
+    "express-session": "^1.8.2"
+  }
+}
