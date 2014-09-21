@@ -4,7 +4,7 @@ var Twitter = require('passport-twitter').Strategy
 ,   config = {
                 consumerKey: tokens.twitter_consumer_key,
                 consumerSecret: tokens.twitter_consumer_secret,
-                callbackURL: "/auth/twitter/callback"
+                callbackURL: "/login"
     }
 
 function callback(token, tokenSecret, profile, done) {
@@ -16,13 +16,14 @@ function callback(token, tokenSecret, profile, done) {
       return done(null, user)
     } else {
       // User doesn't exist in database,
-      // so it's necessary to create a new one.
-      console.log("Opcion 3");
-      var register = new User({
-                                profile_id: profile.id,
-                                name: profile.displayName,
-                                photo: profile.photos[0].value
-                            });
+      // so it will create a new one.
+      var pic = profile.photos[0].value.replace(/_normal/, '')
+      ,   usr = {
+                profile_id: profile.id,
+                name: profile.displayName,
+                photo: pic
+              }
+      ,   register = new User(usr);
       register.save(function (err, user) {
         if (err) throw err;
         done(null, user)
