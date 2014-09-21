@@ -10,7 +10,10 @@ $ npm install
 $ cd app
 $ node app.js
 ``` 
+### credits
 
-### license
+Thanks to [Carlos Azaustre](https://github.com/carlosazaustre) for this helpful tutorial: [passportjs-example](http://youtu.be/Oy5ds6z4R-c) 
+
+# license
 
 [MIT License](http://opensource.org/licenses/MIT) © Jobsamuel Núñez
