@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost/passport-demo-app', function (err, db) {
 	console.log("Connected to database...");
 });
 
-// Swig configuration.
+// Swig configuration
 
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
@@ -31,38 +31,37 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(session({ secret: 'pass', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'pass', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes.
+// Root route.
 
 app.get('/', function (req, res) {
-	var user = req.session.passport.user;
-	if (user == null) {
-		res.render('index', { name: "Stranger" });	
+	if (req.user == null) {
+		res.render('index', { name: "stranger", session: "Login", link: "/login" });	
 	} else {
-		res.render('index', { name: user.name });
+		res.render('index', { name: req.user.name, photo: req.user.photo, session: "Logout", link: "/logout" });
 	}
 });
 
-app.get('/login', function (req, res) {
-	res.send({message: "Login!"});
-});
-
-
-// Redirect the user to Twitter for authentication.  When complete, Twitter
-// will redirect the user back to the application at: /auth/twitter/callback
-
-app.get('/auth/twitter', passport.authenticate('twitter'));
-
-// Twitter will redirect the user to this URL after approval.  Finish the
-// authentication process by attempting to obtain an access token.  If
-// access was granted, the user will be logged in.  Otherwise,
+// Redirect the user to Twitter for authentication. Finish the
+// authentication process by attempting to obtain an access token. If
+// access was granted, the user will be logged in. Otherwise,
 // authentication has failed.
 
-app.get('/auth/twitter/callback', passport.authenticate('twitter',
-  { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/login', passport.authenticate('twitter'), function (req, res) {
+	// Twitter will redirect the user to this URL after approval.
+	res.redirect('/');
+});
+
+// Logout the user.
+// It will remove the req.user property and clear the login session (if any).
+
+app.get('/logout', function (req, res) {
+	req.logout();
+	res.redirect('/');
+});
 
 app.listen(3000);
 console.log("App listening on port 3000");
