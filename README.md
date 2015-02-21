@@ -1,6 +1,6 @@
 # pass
 
-A demo app that uses [Passport](https://github.com/jaredhanson/passport).
+> A demo app that uses [Passport](https://github.com/jaredhanson/passport).
 
 ### usage
 
@@ -16,4 +16,4 @@ Thanks to [Carlos Azaustre](https://github.com/carlosazaustre) for this helpful 
 
 # license
 
-[MIT License](http://opensource.org/licenses/MIT) © Jobsamuel Núñez
+[MIT License](http://opensource.org/licenses/MIT) :copyright: Jobsamuel Núñez
